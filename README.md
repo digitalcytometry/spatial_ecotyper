@@ -16,7 +16,7 @@ We provide 6 comprehensive tutorials illustrating the functionalities included i
 
 -   **Tutorial 1:** [Discovery of Spatial Ecotypes from A Single Sample](https://digitalcytometry.github.io/spatial_ecotyper/articles/SingleSample.html)
 -   **Tutorial 2:** [Discovery of Spatial Ecotypes from Multiple Samples](https://digitalcytometry.github.io/spatial_ecotyper/articles/Integration.html)
--   **Tutorial 3:** [Development of NMF Models for Spatial Ecotype Recovery](articles/TrainRecoveryModels.html)
+-   **Tutorial 3:** [Development of NMF Models for Spatial Ecotype Recovery](https://digitalcytometry.github.io/spatial_ecotyper/articles/TrainRecoveryModels.html)
 -   **Tutorial 4:** [Recovery of Spatial Ecotypes from Spatial Transcriptomics Data](https://digitalcytometry.github.io/spatial_ecotyper/articles/Recovery_Spatial.html)
 -   **Tutorial 5:** [Recovery of Spatial Ecotypes from Single-Cell Gene Expression Data](https://digitalcytometry.github.io/spatial_ecotyper/articles/Recovery_scRNA.html)
 -   **Tutorial 6:** [Recovery of Spatial Ecotypes from Bulk Gene Expression Data](https://digitalcytometry.github.io/spatial_ecotyper/articles/Recovery_Bulk.html)
