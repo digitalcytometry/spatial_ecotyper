@@ -1,0 +1,137 @@
+---
+title: "Recovery of Spatial Ecotypes from Bulk Gene Expression Data"
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+    toc_collapsed: true
+    number_sections: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+```
+
+# Overview
+
+In this tutorial, we will demonstrate how to infer spatial ecotype (SE) abundances from bulk RNA-seq data. Specifically, we will infer SE abundances from RNA-seq data of TCGA melanoma samples. The gene expression matrix is  available at [SKCM_RNASeqV2.geneExp.tsv](https://drive.google.com/open?id=14RwnoxhIkGeLp6GXehmAXLvy8Ii2_COU&usp=drive_fs), which is a Transcripts Per Million (TPM) matrix obtained from the [PanCanAtlas](https://gdc.cancer.gov/about-data/publications/pancanatlas).
+
+__First load required packages for this vignette__
+
+```{r lib}
+suppressPackageStartupMessages(library(googledrive))
+suppressPackageStartupMessages(library(Seurat))
+suppressPackageStartupMessages(library(data.table))
+library(SpatialEcoTyper)
+```
+
+# Loading bulk expression of TCGA melanoma samples
+
+```{r downloadtcga, eval=FALSE}
+drive_deauth() # Disable Google sign-in requirement
+drive_download(as_id("14RwnoxhIkGeLp6GXehmAXLvy8Ii2_COU"), "SKCM_RNASeqV2.geneExp.tsv", overwrite = TRUE) # download data from googledrive
+```
+
+```{r loadbulk}
+bulkdata <- fread("SKCM_RNASeqV2.geneExp.tsv", sep = "\t", data.table = FALSE)
+rownames(bulkdata) <- bulkdata[, 1] ## Set the first column as row names
+bulkdata <- bulkdata[, -1] ## Drop the first column
+head(bulkdata[, 1:5]) ## TPM matrix
+```
+
+# SE deconvolution
+
+The [DeconvoluteSE](../reference/DeconvoluteSE.html) function infers SE abundances in bulk tissues. Users can choose to either use the default model, which estimates the abundance of predefined SEs, or apply a custom model to infer the abundance of newly defined SEs based on bulk gene expression data. Before prediction, the gene expression data will be log2-transformed (if the max value exceeds 80), followed by normalization to have a mean of 0 and unit variance for each gene. To ensure accurate univariance normalization, a minimum sample size of 20 is recommended. For dataset with fewer samples, we would recommend to use public datasets as reference to estimate the mean and standard deviation
+
+The default model is trained on pseudobulk gene expression data and predicts the abundances of nine predefined SEs along with a nonSE group, which primarily includes cancer cells and cells not associated with any SEs. The predicted SE and nonSE abundances for each sample sum to 1, making them comparable across samples.
+
+**Note**: 1) SE abundances are directly comparable across samples, enabling the analysis of SE distribution patterns under different conditions. 2) Since the number of cell states varies across SEs, direct abundance comparisons between different SEs or with the nonSE group may not be meaningful. SEs represent distinct spatial multicellular communities, each defined by a unique combination of cell states.
+
+## Using default model
+
+```{r DeconvoluteSE}
+sefracs <- DeconvoluteSE(bulkdata, scale = TRUE)
+head(sefracs)
+```
+
+## Using custom model
+
+After identifying SEs using [SpatialEcoTyper](../reference/SpatialEcoTyper.html) or [MultiSpatialEcoTyper](../reference/MultiSpatialEcoTyper.html), users can develop a Non-Negative Matrix Factorization (NMF) model to deconvolve SEs from bulk tissue samples, following the tutorial below.
+
+<details><summary><strong>Development of SE deconvolution models</strong></summary>
+
+Users can create an NMF model to deconvolve SEs from bulk gene expression data. The training data can be derived from pseudo-bulk mixtures created by aggregating single-cell transcriptomics data. In this tutorial, we will generate pseudo-bulk mixtures using single-cell RNA-seq data from a melanoma sample, which is also featured in the [Recovery of Spatial Ecotypes from Single-Cell Gene Expression Data](Recovery_scRNA.html). 
+
+The raw count for this sample is available at  [WU2161_counts.tsv](https://drive.google.com/open?id=17VAeOnz6vTt2s0ZeTrK1kITdJ3Yus4ei&usp=drive_fs) and SE recovery results are available at [WU2161_RecoveredSEs.tsv](https://drive.google.com/open?id=17kFjOHhmWxWAKm-LDqy6wV27o5lvz8L2&usp=drive_fs).
+
+__Loading data__
+
+```{r downloadscrna, eval=FALSE}
+# Download single-cell gene expression matrix and SE recovery results.
+# The downloads should be finished within 1min.
+drive_download(as_id("17VAeOnz6vTt2s0ZeTrK1kITdJ3Yus4ei"), "WU2161_counts.tsv", overwrite = TRUE)
+drive_download(as_id("17kFjOHhmWxWAKm-LDqy6wV27o5lvz8L2"), "WU2161_RecoveredSEs.tsv", overwrite = TRUE)
+```
+
+```{r loadscrna, eval=FALSE}
+# Load single-cell gene expression matrix.
+counts = fread("WU2161_counts.tsv", sep = "\t", data.table = FALSE)
+rownames(counts) = counts[, 1] ## Set the first column as row names
+counts = counts[, -1] ## Drop the first column
+head(counts[, 1:5])
+
+# Load SE recovery results
+SEs = read.table("WU2161_RecoveredSEs.tsv", sep = "\t", row.names = 1, header = TRUE)
+SEs = SEs[match(colnames(counts), rownames(SEs)), 1] # extract SE predictions
+length(SEs)
+table(SEs)
+```
+
+**Note**: For demonstration purposes, we used 1,337 cells grouped into SEs to create pseudo-bulk mixtures. While this limited cell number offers a basic example, it may not fully capture the diverse characteristics of SEs, potentially affecting the robustness of model training and subsequent SE recovery. In practice, we recommend using a more comprehensive dataset that accurately reflects the properties of SEs, ensuring that the training process results in a reliable recovery model.
+
+__Creating pseudobulk data__
+
+The [CreatePseudobulks](../reference/CreatePseudobulks.html) function will be used to create pseudo-bulk mixtures from single-cell (spatial) transcriptomics data with all cells grouped into SEs. It samples cell fractions from a Gaussian distribution, sets negative fractions to 0 and re-normalizes fractions to sum to 1 across all SEs. Based on the resulting fractions, it samples 1,000 cells per pseudo-bulk mixture with replacement, aggregates their transcriptomes in non-log linear space, and normalize the resulting mixture to logarithm CPM using Seurat's `NormalizeData`.
+
+```{r createpseudobulk, eval=FALSE}
+result = CreatePseudobulks(counts = counts, groups = SEs, n_mixtures = 100)
+head(result$Mixtures[, 1:5]) ## Gene expression matrix of pseudobulks
+head(result$Fracs) ## SE fractions in pseudobulks
+```
+
+__Training__
+
+The [NMFGenerateW](../reference/NMFGenerateW.html) function will be used to train an NMF model for SE deconvolution based on the provided SE fractions and gene expression matrix. Before applying NMF, each gene's expression is scaled to have a mean of 0 and unit variance (recommended). To meet the non-negativity requirement of NMF, the expression matrix is transformed using the posneg method. This transformation splits the expression matrix into two matrices: one containing only positive values and the other containing the absolute values of the negative values. These two matrices are then concatenated to form the final training data for the NMF model.
+
+```{r traindecov, eval=FALSE}
+W = NMFGenerateW(t(result$Fracs), result$Mixtures)
+## This step should be done within 1 min
+head(W)
+```
+
+The resulting W matrix can be used to infer SE sbundances from bulk gene expression profiles by using the [DeconvoluteSE](../reference/DeconvoluteSE.html) function. 
+
+</details>
+
+__Deconvolution__
+
+Then you can use the new model for SE deconvolution by specifying the `W` parameter:
+```{r DeconvoluteSE2, eval=FALSE}
+sefracs <- DeconvoluteSE(bulkdata, W = W)
+```
+
+
+# Visualization of SE abundances
+```{r visualse}
+library(grid)
+HeatmapView(sefracs, breaks = c(0, 0.15, 0.3), 
+            show_row_names = FALSE, cluster_rows = TRUE)
+```
+
+# Session info
+
+The session info allows users to replicate the exact environment and identify potential discrepancies in package versions or configurations that might be causing problems.
+
+```{r session}
+sessionInfo()
+```

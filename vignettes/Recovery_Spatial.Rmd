@@ -1,0 +1,232 @@
+---
+title: "Recovery of Spatial Ecotypes from Spatial Transcriptomics Data"
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+    toc_collapsed: true
+    number_sections: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+```
+
+# SE recovery from single-cell spatial data
+
+In this tutorial, we will demonstrate how to recover spatial ecotypes (SEs) from single-cell spatial transcriptomics data profiled by platforms such as MERSCOPE, CosMx SMI, or Xenium. We will use a subset of a melanoma MERSCOPE sample to illustrate the SE recovery process. The expression data and single-cell metadata can be downloaded from the [Google Drive](https://drive.google.com/open?id=17K5XR7VEvxN9walV4RtaLOR2cBRG-aMh&usp=drive_fs). In this data, single cells were categorized into nine major cell types, including B cells, CD4+ T cells, CD8+ T cells, NK cells, plasma cells, macrophages, dendritic cells (DC), fibroblasts, and endothelial cells. 
+
+__First load required packages for this vignette__
+
+```{r lib}
+suppressPackageStartupMessages(library(dplyr))
+suppressPackageStartupMessages(library(ggplot2))
+suppressPackageStartupMessages(library(Seurat))
+suppressPackageStartupMessages(library(data.table))
+suppressPackageStartupMessages(library(googledrive))
+library(SpatialEcoTyper)
+```
+
+## Loading data
+
+Download the demo data from Google Drive:
+```{r downloadscst, eval=FALSE}
+drive_deauth() # Disable Google sign-in requirement
+drive_download(as_id("13Rc5Rsu8jbnEYYfUse-xQ7ges51LcI7n"), "HumanMelanomaPatient1_subset_counts.tsv.gz", overwrite = TRUE)
+drive_download(as_id("12xcZNhpT-xbhcG8kX1QAdTeM9TKeFAUW"), "HumanMelanomaPatient1_subset_scmeta.tsv", overwrite = TRUE)
+```
+
+Load the gene expression matrix and meta data into R.
+```{r loadscst}
+# Load single-cell gene expression matrix. Rows are genes, columns are cells.
+scdata <- fread("HumanMelanomaPatient1_subset_counts.tsv.gz", 
+                sep = "\t",header = TRUE, data.table = FALSE)
+rownames(scdata) <- scdata[, 1]
+scdata <- as.matrix(scdata[, -1])
+head(scdata[, 1:5])
+
+# Load single-cell metadata, with at least three columns, including X, Y, and CellType
+scmeta <- read.table("HumanMelanomaPatient1_subset_scmeta.tsv", 
+                      sep = "\t",header = TRUE, row.names = 1)
+scdata = scdata[, match(rownames(scmeta), colnames(scdata))]
+
+head(scmeta[, c("X", "Y", "CellType")])
+```
+
+## Data normalization
+
+The gene expression data should be normalized for the SE recovery. The data can be normalized using [SCTransform](https://satijalab.org/seurat/articles/seurat5_spatial_vignette_2) or [NormalizeData](https://satijalab.org/seurat/reference/normalizedata).
+
+Here, we are normalizing using SCTransform normalization. We recommend to install the glmGamPoi package for faster computation.
+```{r SCTransform, eval = TRUE}
+if(!"glmGamPoi" %in% installed.packages()){
+  BiocManager::install("glmGamPoi")
+}
+tmpobj <- CreateSeuratObject(scdata) %>%
+      SCTransform(clip.range = c(-10, 10), verbose = FALSE)
+
+seurat_version = as.integer(gsub("\\..*", "", as.character(packageVersion("SeuratObject"))))
+if(seurat_version<5){
+  normdata <- GetAssayData(tmpobj, "data")
+}else{
+  normdata <- tmpobj[["SCT"]]$data
+}
+```
+
+<summary>Using `NormalizeData` for the normalization</summary>
+
+```{r NormalizeData, eval = FALSE}
+normdata <- NormalizeData(scdata)
+```
+
+## SE recovery
+
+The [RecoverSE](../reference/RecoverSE.html) function will be used to assign single cells into SEs. Users can either use the default models to recover predefined SEs or use custom models to recover newly defined SEs.
+
+**Note**: To recover SEs from single-cell data, you must specify either `celltypes` or `se_results` in the [RecoverSE](../reference/RecoverSE.html) function. If neither is provided, it will assume that the input data represents spot-level spatial transcriptomics, and SE abundances will be inferred directly from each spot.
+
+The default NMF models were trained on discovery MERSCOPE data, encompassing five cancer types: melanoma, and four carcinomas. These models are tailored to nine distinct cell types: B cells, CD4+ T cells, CD8+ T cells, NK cells, plasma cells, macrophages, dendritic cells, fibroblasts, and endothelial cells. Each model facilitates the recovery of SEs from single-cell datasets, allowing for cell-type-specific SE analysis. Thus, for SE recovery using default models, the cells in the query data should be grouped into one of "B", "CD4T", "CD8T", "NK", "Plasma", "Macrophage", "DC", "Fibroblast", and "Endothelial", case sensitive. All the other cell types will be considered non-SE compartments. 
+
+<details open><summary><strong>Using default models (1)</strong></summary>
+
+Before SE recovery, we recommend to use a unified embedding of spatial microregions by performing de novo Spatial EcoTyper analysis, which integrate gene expression and spatial information. This embedding could enhance the accuracy and refinement of SE recovery results. The detailed tutorial for Spatial EcoTyper analysis is available at [Discovery of Spatial Ecotypes from a Single-cell Spatial Dataset](SingleSample.html).
+
+For demonstration purposes, we used `SpatialEcoTyper` to group cells into spatial clusters with a resolution of 10. In practice, we recommend experimenting with multiple resolutions to ensure robust and reliable results.
+
+```{r spatialecotyper, eval=TRUE}
+## make sure the cells are grouped into one of "B", "CD4T", "CD8T", "NK", "Plasma", "Macrophage", "DC", "Fibroblast", and "Endothelial".
+print(unique(scmeta$CellType))
+
+## Spatial EcoTyper analysis: it would take ~2 min
+emb = SpatialEcoTyper(normdata, scmeta, resolution = 10)
+emb$obj ## A seurat object including the spatial embedding
+head(emb$metadata[, c("X", "Y", "CellType", "SE")])  ## Single-cell meta data with SE annotations
+```
+
+Then specify the `se_results` in the [RecoverSE](../reference/RecoverSE.html) function for SE recovery.
+```{r scst_recov}
+sepreds <- RecoverSE(normdata, se_results = emb)
+head(sepreds)
+```
+</details>
+
+<details><summary><strong>Using default models (2)</strong></summary>
+
+You can also recover the SEs without using spatial embedding, which could be less accurate due to the lack of spatial information. The cell type annotations are required in this case. Cells should be grouped into one of "B", "CD4T", "CD8T", "NK", "Plasma", "Macrophage", "DC", "Fibroblast", and "Endothelial", case sensitive. All the other cell types will be considered non-SE compartments. 
+
+```{r scst_recov2, eval=FALSE}
+## make sure the cells are grouped into one of "B", "CD4T", "CD8T", "NK", "Plasma", "Macrophage", "DC", "Fibroblast", and "Endothelial".
+print(unique(scmeta$CellType))
+sepreds <- RecoverSE(normdata, celltypes = scmeta$CellType)
+head(sepreds)
+```
+</details>
+
+<details><summary><strong>Using custom models</strong></summary>
+
+To use custom models, users should first develop recovery models following the tutorial [Development of SE Recovery Models](TrainRecoveryModels.html). The resulting models can be used for SE recovery. An example model is available at [SE_Recovery_W_list.rds](https://drive.google.com/open?id=171WaAe49babYB85Cn1FcoNNE-lzYp1T_&usp=drive_fs).
+
+```{r downloadWs, eval=FALSE}
+# Download SE recovery model
+drive_download(as_id("171WaAe49babYB85Cn1FcoNNE-lzYp1T_"), "SE_Recovery_W_list.rds", overwrite = TRUE)
+```
+
+Using custom models by specifying the Ws argument:
+```{r scst_recov3, eval=FALSE}
+Ws <- readRDS("SE_Recovery_W_list.rds")
+## make sure the cell type names are consistent.
+print(unique(scmeta$CellType))
+print(names(Ws))
+sepreds <- RecoverSE(normdata, celltypes = scmeta$CellType, Ws = Ws)
+
+## If Spatial EcoTyper result is available, we recommend:
+sepreds <- RecoverSE(normdata, se_results = emb, Ws = Ws)
+```
+</details>
+
+## Visualization of SEs in the tissue
+
+```{r visualscst}
+## Add the recovery result into the meta data
+scmeta$RecoveredSE <- sepreds[rownames(scmeta)]
+## Visualize the SE recovery results
+SpatialView(scmeta, by = "RecoveredSE")
+```
+
+
+# Recovery of spatial ecotypes from Visium Spatial Gene Expression data
+
+To recover SEs from Visium spatial transcriptomics data, we first infer SE abundances from each spot. Each spot is then assigned to the SE with the highest inferred abundance, enabling the spatial mapping of SEs across the tissue. In this tutorial, we will use a breast cancer sample to demonstrate the SE recovery from a Visium data. The expression data can be accessed from: [V1_Breast_Cancer_Block_A_Section_1_filtered_feature_bc_matrix.h5](https://drive.google.com/open?id=15D9LgvZmCZUfsL62cD67JMf8Jcq_UyuB&usp=drive_fs), which was downloaded from [10x Genomics datasets](https://www.10xgenomics.com/datasets).
+
+## Loading data
+
+First, download the data from Google Drive
+```{r downloadvisium, eval=FALSE}
+drive_download(as_id("15D9LgvZmCZUfsL62cD67JMf8Jcq_UyuB"), "V1_Breast_Cancer_Block_A_Section_1_filtered_feature_bc_matrix.h5", overwrite = TRUE)
+drive_download(as_id("15NTZc1HrW_gLS_pmi1ckYLw30kNarf4w"), "V1_Breast_Cancer_Block_A_Section_1_tissue_positions_list.csv", overwrite = TRUE)
+## This download should be done within 1 min.
+```
+
+Load the expression data into R using the `Read10X_h5` function from the Seurat package.
+```{r loadvisium}
+if(!"hdf5r" %in% installed.packages()) BiocManager::install("hdf5r")
+require("hdf5r")
+# Load Visium gene expression matrix. Rows are genes, columns are spots.
+dat <- Read10X_h5("V1_Breast_Cancer_Block_A_Section_1_filtered_feature_bc_matrix.h5")
+# normalize the expression data
+dat <- NormalizeData(dat)
+
+meta <- read.csv("V1_Breast_Cancer_Block_A_Section_1_tissue_positions_list.csv", 
+                 header = FALSE, row.names = 1)
+colnames(meta) <- c("tissue", "row", "col", "imagerow", "imagecol")
+meta <- meta[colnames(dat), ]
+head(meta)
+```
+
+
+## SE recovery
+
+If neither `celltypes` nor `se_results` are specified, the [RecoverSE](../reference/RecoverSE.html) function will assume the input data is a gene-by-spot gene expression matrix and infer SE abundances across spots. Users have the option to either use the default models to recover predefined SEs or apply custom models to recover newly defined SEs.
+
+<details open><summary><strong>Using default models</strong></summary>
+
+```{r recovervisium}
+preds <- RecoverSE(dat)
+head(preds)
+## This step would take ~3 minutes to complete
+```
+</details>
+
+<details><summary><strong>Using custom models</strong></summary>
+
+To develop SE recovery models, users should follow the tutorial [Developing SE Recovery Models](TrainRecoveryModels.html). The resulting models can be used for SE recovery. An example model is available at [SE_Recovery_W_list.rds](https://drive.google.com/open?id=171WaAe49babYB85Cn1FcoNNE-lzYp1T_&usp=drive_fs). By specifying the `Ws` parameter (a list of cell-type-specific W matrices) in the [RecoverSE](../reference/RecoverSE.html) function, the custom models will be used for recovering SEs.
+
+```{r scst_recov4, eval=FALSE}
+# Download SE recovery model
+drive_download(as_id("171WaAe49babYB85Cn1FcoNNE-lzYp1T_"), "SE_Recovery_W_list.rds", overwrite = TRUE)
+Ws <- readRDS("SE_Recovery_W_list.rds")
+
+## Using custom models by specifying the Ws argument
+preds <- RecoverSE(normdata, Ws = Ws)
+## This step would take ~3 minutes to complete
+```
+</details>
+
+## Visualization of SEs in the tissue
+
+Each spot can be assigned to the SE with the highest inferred abundance, and the spatial mapping of SEs can be visualized using the [SpatialView](../reference/SpatialView.html) function.
+
+```{r visualvisium}
+meta$RecoveredSE = colnames(preds)[apply(preds, 1, which.max)]
+meta$Y = -meta$row
+SpatialView(meta, by = "RecoveredSE", X = "col", Y = "Y", pt.size = 2)
+```
+
+# Session info
+
+The session info allows users to replicate the exact environment and identify potential discrepancies in package versions or configurations that might be causing problems.
+
+```{r session}
+sessionInfo()
+```
+
