@@ -32,7 +32,7 @@ Depending on the input data:
 This function can recover SEs from Visium, scRNA-seq data or single-cell spatial data.
 }
 \examples{
-# see https://digitalcytometry.github.io/SpatialEcoTyper_dev/articles/Recovery_scRNA.html
-# see https://digitalcytometry.github.io/SpatialEcoTyper_dev/articles/Recovery_Spatial.html
+# see https://digitalcytometry.github.io/spatialecotyper/articles/Recovery_scRNA.html
+# see https://digitalcytometry.github.io/spatialecotyper/articles/Recovery_Spatial.html
 
 }

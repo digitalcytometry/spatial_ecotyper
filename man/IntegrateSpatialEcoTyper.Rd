@@ -63,6 +63,6 @@ Default is 5000. This option splits the matrix into smaller chunks (minibatch), 
 Integrate Multiple Spatial Transcriptomics Datasets to Identify Conserved Spatial Ecotypes
 }
 \examples{
-# See https://digitalcytometry.github.io/SpatialEcoTyper/docs/articles/Integration.html
+# See https://digitalcytometry.github.io/spatialecotyper/docs/articles/Integration.html
 
 }

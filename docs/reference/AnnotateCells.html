@@ -119,12 +119,9 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span> HumanMelanomaPatient1__cell_3661 Stroma      -874.2712</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> HumanMelanomaPatient1__cell_3663 Stroma      -903.6559</span>
 <span class="r-in"><span><span class="va">obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="st">"Melanoma1_subset_SpatialEcoTyper_results.rds"</span><span class="op">)</span><span class="op">$</span><span class="va">obj</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>cannot open compressed file 'Melanoma1_subset_SpatialEcoTyper_results.rds', probable reason 'No such file or directory'</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in gzfile(file, "rb"):</span> cannot open the connection</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Transfer SE annotations to single cells</span></span></span>
 <span class="r-in"><span><span class="va">scmeta</span> <span class="op">&lt;-</span> <span class="fu">AnnotateCells</span><span class="op">(</span>scmeta <span class="op">=</span> <span class="va">scmeta</span>, obj <span class="op">=</span> <span class="va">obj</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'obj' not found</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">scmeta</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                                         X         Y   CellType CellTypeName</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> HumanMelanomaPatient1__cell_3655 1894.706 -6367.766 Fibroblast  Fibroblasts</span>
@@ -133,13 +130,13 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span> HumanMelanomaPatient1__cell_3660 1981.600 -6372.266 Fibroblast  Fibroblasts</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> HumanMelanomaPatient1__cell_3661 1742.939 -6374.851 Fibroblast  Fibroblasts</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> HumanMelanomaPatient1__cell_3663 1921.683 -6383.309 Fibroblast  Fibroblasts</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                  Region Dist2Interface</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> HumanMelanomaPatient1__cell_3655 Stroma      -883.1752</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> HumanMelanomaPatient1__cell_3657 Stroma      -894.8463</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> HumanMelanomaPatient1__cell_3658 Stroma      -904.1115</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> HumanMelanomaPatient1__cell_3660 Stroma      -907.8909</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> HumanMelanomaPatient1__cell_3661 Stroma      -874.2712</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> HumanMelanomaPatient1__cell_3663 Stroma      -903.6559</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                  Region Dist2Interface  SE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> HumanMelanomaPatient1__cell_3655 Stroma      -883.1752 SE5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> HumanMelanomaPatient1__cell_3657 Stroma      -894.8463 SE7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> HumanMelanomaPatient1__cell_3658 Stroma      -904.1115 SE7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> HumanMelanomaPatient1__cell_3660 Stroma      -907.8909 SE7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> HumanMelanomaPatient1__cell_3661 Stroma      -874.2712 SE0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> HumanMelanomaPatient1__cell_3663 Stroma      -903.6559 SE5</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

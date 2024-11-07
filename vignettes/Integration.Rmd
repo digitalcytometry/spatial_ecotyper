@@ -314,7 +314,7 @@ IntegrateSpatialEcoTyper(SpatialEcoTyper_list, data_list,
 <details><summary><strong>Optimizing memory usage</strong></summary>
 For real-world single-cell ST datasets with over 100,000 cells, the analysis can be both time- and memory-intensive. To speed up the process, you can increase the number of cores used (`ncores`), but this will also increase memory consumption.
 
-If you have limited computational memory, there are several strategies to reduce usage. One approach is to decrease the `minibatch` size and reduce the number of cores (`ncores`) allocated. However, for larger datasets, the minimum memory requirement may remain high. Another option is to increase the `binsize`, which reduces the number of spatial microregions. This can significantly decrease memory usage by downsampling the ST data, potentially excluding many cells from the analysis though.
+If you have limited computational memory, there are several strategies to reduce usage. One approach is to decrease the `minibatch` size and reduce the number of cores (`ncores`) allocated. However, for larger datasets, the minimum memory requirement may remain high. Another option is to increase the `grid.size`, which reduces the number of spatial microregions. This can significantly decrease memory usage by downsampling the ST data, potentially excluding many cells from the analysis though.
 
 </details>
 

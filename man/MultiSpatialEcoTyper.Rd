@@ -92,6 +92,6 @@ This function takes a list of gene expression matrices and corresponding metadat
          integrates the results across multiple samples to identify conserved spatial ecotypes.
 }
 \examples{
-# See https://digitalcytometry.github.io/SpatialEcoTyper/docs/articles/Integration.html
+# See https://digitalcytometry.github.io/spatialecotyper/docs/articles/Integration.html
 
 }

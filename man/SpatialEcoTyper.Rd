@@ -20,7 +20,7 @@ SpatialEcoTyper(
   iterations = 5,
   minibatch = 5000,
   ncores = 1,
-  binsize = round(radius * 1.4),
+  grid.size = round(radius * 1.4),
   filter.region.by.celltypes = NULL
 )
 }
@@ -60,8 +60,8 @@ Default is 5000. This option splits the matrix into smaller chunks (minibatch), 
 
 \item{ncores}{Integer specifying the number of CPU cores to use for parallel processing.}
 
-\item{binsize}{Numeric specifying the bin size for spatial discretization of coordinates. By default,
-this size is determined based on the specified radius (radius*1.4 µm). Increasing the binsize will
+\item{grid.size}{Numeric specifying the grid size for spatial discretization of coordinates. By default,
+this size is determined based on the specified radius (radius*1.4 µm). Increasing the grid.size will
 downsample microregions and expedite the analysis, while it might eliminate cells located between bins
 from the SE discovery analysis.}
 
@@ -80,7 +80,7 @@ be included, regardless of cell type composition.
 This function identifies spatially distinct cellular ecosystems (SE) from a single sample.
 }
 \examples{
-# See https://digitalcytometry.github.io/SpatialEcoTyper/docs/articles/SingleSample.html
+# See https://digitalcytometry.github.io/spatialecotyper/docs/articles/SingleSample.html
 suppressPackageStartupMessages(library(dplyr))
 suppressPackageStartupMessages(library(ggplot2))
 suppressPackageStartupMessages(library(parallel))
