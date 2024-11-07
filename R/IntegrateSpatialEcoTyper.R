@@ -25,7 +25,7 @@
 #' @param seed An integer used to seed the random number generator for NMF analysis.
 #'
 #' @examples
-#' # See https://digitalcytometry.github.io/SpatialEcoTyper/docs/articles/Integration.html
+#' # See https://digitalcytometry.github.io/spatialecotyper/docs/articles/Integration.html
 #'
 #' @export
 #'

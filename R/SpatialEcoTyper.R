@@ -22,8 +22,8 @@
 #' @param minibatch Integer specifying the number of columns to process in each minibatch in the SNF analysis.
 #' Default is 5000. This option splits the matrix into smaller chunks (minibatch), thus reducing memory usage.
 #' @param ncores Integer specifying the number of CPU cores to use for parallel processing.
-#' @param binsize Numeric specifying the bin size for spatial discretization of coordinates. By default,
-#' this size is determined based on the specified radius (radius*1.4 µm). Increasing the binsize will
+#' @param grid.size Numeric specifying the grid size for spatial discretization of coordinates. By default,
+#' this size is determined based on the specified radius (radius*1.4 µm). Increasing the grid.size will
 #' downsample microregions and expedite the analysis, while it might eliminate cells located between bins
 #' from the SE discovery analysis.
 #' @param filter.region.by.celltypes A character vector specifying the cell types to include in the analysis.
@@ -41,7 +41,7 @@
 #' @importFrom parallel detectCores
 #'
 #' @examples
-#' # See https://digitalcytometry.github.io/SpatialEcoTyper/docs/articles/SingleSample.html
+#' # See https://digitalcytometry.github.io/spatialecotyper/docs/articles/SingleSample.html
 #' suppressPackageStartupMessages(library(dplyr))
 #' suppressPackageStartupMessages(library(ggplot2))
 #' suppressPackageStartupMessages(library(parallel))
@@ -93,7 +93,7 @@ SpatialEcoTyper <- function(normdata, metadata,
                             iterations = 5,
                             minibatch = 5000,
                             ncores = 1,
-                            binsize = round(radius*1.4),
+                            grid.size = round(radius*1.4),
                             filter.region.by.celltypes = NULL){
 
   if(ncol(normdata)!=nrow(metadata)){
@@ -110,7 +110,7 @@ SpatialEcoTyper <- function(normdata, metadata,
   if(!"Y" %in% colnames(metadata)) stop("the meta data should include spatial coordinates (X and Y) of cells")
 
   ncmeta = metadata
-  ncmeta$SpotID <- paste0("X", round(ncmeta$X / binsize), "_Y", round(ncmeta$Y / binsize))
+  ncmeta$SpotID <- paste0("X", round(ncmeta$X / grid.size), "_Y", round(ncmeta$Y / grid.size))
   ncmeta <- ncmeta %>% group_by(SpotID) %>%
     mutate(Spot.X = median(X), Spot.Y = median(Y)) %>% as.data.frame
   rownames(ncmeta) = rownames(metadata)
@@ -177,7 +177,7 @@ SpatialEcoTyper <- function(normdata, metadata,
                             "_k.sn", k.sn, "_k", k, "_min.cells", min.cells,
                             "_min.features", min.features,
                             "_min.cts.per.region", min.cts.per.region,
-                            "_iterations", iterations, "_binsize", binsize)
+                            "_iterations", iterations, "_grid.size", grid.size)
   metadata = AnnotateCells(metadata, obj)
   results <- list(obj = obj, metadata = metadata)
   if(!is.null(outprefix)){

@@ -46,7 +46,7 @@
 #' @return The function saves the results in the specified output directory.
 #'
 #' @examples
-#' # See https://digitalcytometry.github.io/SpatialEcoTyper/docs/articles/Integration.html
+#' # See https://digitalcytometry.github.io/spatialecotyper/docs/articles/Integration.html
 #'
 #' @export
 #'

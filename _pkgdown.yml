@@ -1,13 +1,13 @@
-url: https://digitalcytometry.github.io/spatial_ecotyper
+url: https://digitalcytometry.github.io/spatialecotyper
 
 development:
   mode: auto
 
 repo:
   url:
-    home: https://github.com/digitalcytometry/spatial_ecotyper
-    source: https://github.com/digitalcytometry/spatial_ecotyper
-    issue: https://github.com/digitalcytometry/spatial_ecotyper/issues
+    home: https://github.com/digitalcytometry/spatialecotyper
+    source: https://github.com/digitalcytometry/spatialecotyper
+    issue: https://github.com/digitalcytometry/spatialecotyper/issues
   branch: main
 
 template:

@@ -14,8 +14,8 @@ Suggests: googledrive
 Description: SpatialEcoTyper is an unsupervised machine learning framework for 
   discovering spatial ecotypes (multi-cellular communities) from single-cell spatial data.
 License: STANFORD NON-COMMERCIAL SOFTWARE LICENSE AGREEMENT
-URL: https://digitalcytometry.github/spatial_ecotyper
-BugReports: https://github.com/digitalcytometry/spatial_ecotyper/issues
+URL: https://digitalcytometry.github/spatialecotyper
+BugReports: https://github.com/digitalcytometry/spatialecotyper/issues
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.3.2

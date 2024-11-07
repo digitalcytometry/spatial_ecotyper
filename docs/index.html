@@ -6,6 +6,12 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Spatial ecotype analaysis • SpatialEcoTyper</title>
+<!-- favicons --><link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+<link rel="apple-touch-icon" type="image/png" sizes="180x180" href="apple-touch-icon.png">
+<link rel="apple-touch-icon" type="image/png" sizes="120x120" href="apple-touch-icon-120x120.png">
+<link rel="apple-touch-icon" type="image/png" sizes="76x76" href="apple-touch-icon-76x76.png">
+<link rel="apple-touch-icon" type="image/png" sizes="60x60" href="apple-touch-icon-60x60.png">
 <script src="deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.4.2/css/all.min.css" rel="stylesheet">
@@ -13,7 +19,7 @@
 <script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Spatial ecotype analaysis">
 <meta name="description" content="SpatialEcoTyper is an unsupervised machine learning framework for discovering spatial ecotypes (multi-cellular communities) from single-cell spatial data.">
 <meta property="og:description" content="SpatialEcoTyper is an unsupervised machine learning framework for discovering spatial ecotypes (multi-cellular communities) from single-cell spatial data.">
-<meta property="og:image" content="https://digitalcytometry.github.io/spatial_ecotyper/logo.png">
+<meta property="og:image" content="https://digitalcytometry.github.io/spatialecotyper/logo.png">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -50,7 +56,7 @@
 <li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="search.json">
 </form></li>
-<li class="nav-item"><a class="external-link nav-link" href="https://github.com/digitalcytometry/spatial_ecotyper" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/digitalcytometry/spatialecotyper" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
       </ul>
 </div>
 
@@ -69,26 +75,26 @@
 <div class="section level2">
 <h2 id="overview-of-spatial-ecotyper">Overview of Spatial EcoTyper<a class="anchor" aria-label="anchor" href="#overview-of-spatial-ecotyper"></a>
 </h2>
-<p><strong>Spatial EcoTyper</strong> is available as an R package, with comprehensive documentation accessible at <a href="https://digitalcytometry.github.io/spatial_ecotyper" class="uri">https://digitalcytometry.github.io/spatial_ecotyper</a>. Additionally, Spatial EcoTyper can be used via the web platform at <a href="https://spatial_ecotyper.stanford.edu/" class="external-link">https://spatial_ecotyper.stanford.edu/</a> (will be available soon), a user-friendly interface for recovering spatial ecotypes from various data sources, including spatial transcriptomics (e.g. MERSCOPE, Visium, etc), single-cell RNA-seq, and bulk gene expression datasets.</p>
+<p><strong>Spatial EcoTyper</strong> is available as an R package, with comprehensive documentation accessible at <a href="https://digitalcytometry.github.io/spatialecotyper" class="uri">https://digitalcytometry.github.io/spatialecotyper</a>. Additionally, Spatial EcoTyper can be used via the web platform at <a href="https://spatialecotyper.stanford.edu/" class="external-link">https://spatialecotyper.stanford.edu/</a> (will be available soon), a user-friendly interface for recovering spatial ecotypes from various data sources, including spatial transcriptomics (e.g. MERSCOPE, Visium, etc), single-cell RNA-seq, and bulk gene expression datasets.</p>
 <p>We provide 6 comprehensive tutorials illustrating the functionalities included in the SpatialEcoTyper R package. The first tutorial demonstrates how to identify spatial ecotypes from a single-cell spatial transcriptomics data. The second demonstrates how to identified conserved spatial ecotypes across multiple samples. The third demonstrates how to develop NMF models for recovery of spatial ecotypes from unseen data. The remaining tutorials introduce how to recover spatial ecotypes from spatial transcriptomics, scRNA-seq, and bulk RNA-seq datasets.</p>
 <ul>
 <li>
-<strong>Tutorial 1:</strong> <a href="https://digitalcytometry.github.io/spatial_ecotyper/articles/SingleSample.html">Discovery of Spatial Ecotypes from A Single Sample</a>
+<strong>Tutorial 1:</strong> <a href="https://digitalcytometry.github.io/spatialecotyper/articles/SingleSample.html">Discovery of Spatial Ecotypes from A Single Sample</a>
 </li>
 <li>
-<strong>Tutorial 2:</strong> <a href="https://digitalcytometry.github.io/spatial_ecotyper/articles/Integration.html">Discovery of Spatial Ecotypes from Multiple Samples</a>
+<strong>Tutorial 2:</strong> <a href="https://digitalcytometry.github.io/spatialecotyper/articles/Integration.html">Discovery of Spatial Ecotypes from Multiple Samples</a>
 </li>
 <li>
-<strong>Tutorial 3:</strong> <a href="https://digitalcytometry.github.io/spatial_ecotyper/articles/TrainRecoveryModels.html">Development of NMF Models for Spatial Ecotype Recovery</a>
+<strong>Tutorial 3:</strong> <a href="https://digitalcytometry.github.io/spatialecotyper/articles/TrainRecoveryModels.html">Development of NMF Models for Spatial Ecotype Recovery</a>
 </li>
 <li>
-<strong>Tutorial 4:</strong> <a href="https://digitalcytometry.github.io/spatial_ecotyper/articles/Recovery_Spatial.html">Recovery of Spatial Ecotypes from Spatial Transcriptomics Data</a>
+<strong>Tutorial 4:</strong> <a href="https://digitalcytometry.github.io/spatialecotyper/articles/Recovery_Spatial.html">Recovery of Spatial Ecotypes from Spatial Transcriptomics Data</a>
 </li>
 <li>
-<strong>Tutorial 5:</strong> <a href="https://digitalcytometry.github.io/spatial_ecotyper/articles/Recovery_scRNA.html">Recovery of Spatial Ecotypes from Single-Cell Gene Expression Data</a>
+<strong>Tutorial 5:</strong> <a href="https://digitalcytometry.github.io/spatialecotyper/articles/Recovery_scRNA.html">Recovery of Spatial Ecotypes from Single-Cell Gene Expression Data</a>
 </li>
 <li>
-<strong>Tutorial 6:</strong> <a href="https://digitalcytometry.github.io/spatial_ecotyper/articles/Recovery_Bulk.html">Recovery of Spatial Ecotypes from Bulk Gene Expression Data</a>
+<strong>Tutorial 6:</strong> <a href="https://digitalcytometry.github.io/spatialecotyper/articles/Recovery_Bulk.html">Recovery of Spatial Ecotypes from Bulk Gene Expression Data</a>
 </li>
 </ul>
 <p><strong>Note</strong>: <strong>Spatial EcoTyper</strong> depends extensively on Seurat for key processes like dimensionality reduction, UMAP embedding, clustering, and visualization. Initially developed using Seurat v4.3, the tool has been thoroughly tested and validated with Seurat v5. Although UMAP embeddings and clustering results show slight differences between Seurat v4 and v5, the overall consistency remains strong, ensuring that core biological insights are preserved across both versions.</p>
@@ -108,7 +114,7 @@
 <span>                       <span class="st">"glmGamPoi"</span>, <span class="st">"immunogenomics/presto"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co">## Install SpatialEcoTyper</span></span>
-<span><span class="fu">BiocManager</span><span class="fu">::</span><span class="fu"><a href="https://bioconductor.github.io/BiocManager/reference/install.html" class="external-link">install</a></span><span class="op">(</span><span class="st">"digitalcytometry/spatial_ecotyper"</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">BiocManager</span><span class="fu">::</span><span class="fu"><a href="https://bioconductor.github.io/BiocManager/reference/install.html" class="external-link">install</a></span><span class="op">(</span><span class="st">"digitalcytometry/spatialecotyper"</span><span class="op">)</span></span></code></pre></div>
 <details><summary>
 Troubleshooting dependency installation
 </summary><ul>
@@ -129,7 +135,7 @@ Troubleshooting dependency installation
 </li>
 </ul></details><details><summary>
 Install SpatialEcoTyper from source code
-</summary><p>The source code of <strong>Spatial EcoTyper</strong> is available at <a href="https://github.com/digitalcytometry/spatial_ecotyper" class="external-link uri">https://github.com/digitalcytometry/spatial_ecotyper</a>. After downloading the package, you can install it from the source code using the command:</p>
+</summary><p>The source code of <strong>Spatial EcoTyper</strong> is available at <a href="https://github.com/digitalcytometry/spatialecotyper" class="external-link uri">https://github.com/digitalcytometry/spatialecotyper</a>. After downloading the package, you can install it from the source code using the command:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"SpatialEcoTyper.tar.gz"</span>, repos <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
 </details>
@@ -137,7 +143,7 @@ Install SpatialEcoTyper from source code
 <div class="section level2">
 <h2 id="contribution">Contribution<a class="anchor" aria-label="anchor" href="#contribution"></a>
 </h2>
-<p>If you encounter any bugs or have suggestions for improvements, please feel free to open an <a href="https://github.com/digitalcytometry/spatial_ecotyper/issues" class="external-link">issue</a> or submit a pull request. Your feedback and contributions help us make the tool better for everyone.</p>
+<p>If you encounter any bugs or have suggestions for improvements, please feel free to open an <a href="https://github.com/digitalcytometry/spatialecotyper/issues" class="external-link">issue</a> or submit a pull request. Your feedback and contributions help us make the tool better for everyone.</p>
 </div>
 <div class="section level2">
 <h2 id="license">License<a class="anchor" aria-label="anchor" href="#license"></a>
@@ -159,8 +165,8 @@ Install SpatialEcoTyper from source code
   </main><aside class="col-md-3"><div class="links">
 <h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
-<li><a href="https://github.com/digitalcytometry/spatial_ecotyper" class="external-link">Browse source code</a></li>
-<li><a href="https://github.com/digitalcytometry/spatial_ecotyper/issues" class="external-link">Report a bug</a></li>
+<li><a href="https://github.com/digitalcytometry/spatialecotyper" class="external-link">Browse source code</a></li>
+<li><a href="https://github.com/digitalcytometry/spatialecotyper/issues" class="external-link">Report a bug</a></li>
 </ul>
 </div>
 

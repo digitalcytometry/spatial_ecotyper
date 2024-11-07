@@ -19,8 +19,8 @@
 #' - For spot-resolution data (e.g., Visium): A matrix of SE abundances across spots.
 #'
 #' @examples
-#' # see https://digitalcytometry.github.io/SpatialEcoTyper_dev/articles/Recovery_scRNA.html
-#' # see https://digitalcytometry.github.io/SpatialEcoTyper_dev/articles/Recovery_Spatial.html
+#' # see https://digitalcytometry.github.io/spatialecotyper/articles/Recovery_scRNA.html
+#' # see https://digitalcytometry.github.io/spatialecotyper/articles/Recovery_Spatial.html
 #'
 #' @export
 #'
